@@ -1,2 +1,3 @@
-# Daily
-Osobisty pamiętnik typu user stickiness. Praca inżynierska.
+# sticky diary
+
+Personal diary with user stickiness. Engineering work.

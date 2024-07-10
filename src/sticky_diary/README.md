@@ -1,3 +1,3 @@
 # sticky_diary
 
-A new Flutter project.
+Flutter frontend application serving as a user interface.
