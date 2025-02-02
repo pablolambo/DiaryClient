@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../apiUrls.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -14,6 +16,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   bool _obscurePassword = true;
+  final storage = new FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +141,9 @@ class _SignUpFormState extends State<SignUpForm> {
   Future<void> _loginThenShowHomePageScreen() async {
     final url = Uri.parse(ApiUrls.loginUrl);
 
+    _emailTextController.text = 'pawelspam42@gmail.com';
+    _passwordTextController.text = 'Uniwersal11#';
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -147,16 +153,22 @@ class _SignUpFormState extends State<SignUpForm> {
       }),
     );
 
-    // todo: token
+    final responseBody = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
+      final String token = responseBody['accessToken'];
+
+      if (token.isNotEmpty) {
+        await storage.write(key: 'jwt', value: token);
+      }
+
       Navigator.of(context).pushNamed('/home');
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Login Failed'),
-          content: Text(response.body),
+          content: Text(responseBody),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
