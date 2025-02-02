@@ -5,6 +5,8 @@ import '../apiUrls.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../forms/add_entry_form.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -80,15 +82,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        children: tags.map((tag) => Padding(
+                     Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...tags.take(3).map((tag) => Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: Chip(
                             label: Text(tag),
                             backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
                           ),
-                        )).toList(),
-                      ),
+                        )),
+                        if (tags.length > 3)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Chip(
+                              label: Text('...'),
+                              backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
+                            ),
+                        ),
+                      ],
+                    ),
                     ],
                   ),
                   trailing: IconButton(
@@ -130,7 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onItemTapped(2),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddEntryForm()),
+          );
+        },
         tooltip: 'Add Entry',
         shape: const CircleBorder(),
         child: const Icon(Icons.add),
