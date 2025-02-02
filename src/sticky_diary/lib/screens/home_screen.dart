@@ -60,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
               return Card(
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(8),
+                  contentPadding: const EdgeInsets.all(12),
+                  minVerticalPadding: 20,
                   title: Text(
                     entry['title'].length > 32
                         ? '${entry['title'].substring(0, 32)}...'
@@ -82,13 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
                       ),
                       const SizedBox(height: 8),
-                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                     Wrap(
+                      spacing: 1,
+                      runSpacing: 1, 
                       children: [
                         ...tags.take(3).map((tag) => Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: Chip(
-                            label: Text(tag),
+                            label: Text(tag.length > 20 ? '${tag.substring(0, 20)}...' : tag),
                             backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
                           ),
                         )),
@@ -99,22 +101,30 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: Text('...'),
                               backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
                             ),
-                        ),
+                          ),
                       ],
                     ),
                     ],
                   ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      isFavourite ? Icons.star : Icons.star_border,
-                      color: isFavourite ? theme.colorScheme.primary : Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        entry['isFavourite'] = !isFavourite;
-                      });
-                      _setFavouriteStatus(entry['id'], !isFavourite);
-                    },
+                  trailing: Wrap(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isFavourite ? Icons.star : Icons.star_border,
+                          color: isFavourite ? theme.colorScheme.primary : Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            entry['isFavourite'] = !isFavourite;
+                          });
+                          _setFavouriteStatus(entry['id'], !isFavourite);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _confirmDelete(entry['id']),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -228,6 +238,63 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to load entries')),
+      );
+    }
+  }
+
+  void _confirmDelete(String entryId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Deletion'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteEntry(entryId);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Future<void> _deleteEntry(String entryId) async {
+    final url = Uri.parse(ApiUrls.deleteEntryByIdUrl(entryId));
+    var token = await _storage.read(key: 'bearer');
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You are not logged in')),
+      );
+      return;
+    }
+
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      setState(() {
+        _entries.removeWhere((entry) => entry['id'] == entryId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Entry deleted successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete entry')),
       );
     }
   }
