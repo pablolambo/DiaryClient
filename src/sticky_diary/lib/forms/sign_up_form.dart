@@ -71,7 +71,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           : Theme.of(context).colorScheme.primary;
                     }),
                   ),
-                  onPressed: _registerThenShowHomePageScreen,
+                  onPressed: _registerThenShowLoginScreen,
                   child: Text(
                     'Sign up',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary,
@@ -92,7 +92,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           : Theme.of(context).colorScheme.primary;
                     }),
                   ),
-                  onPressed: _loginThenShowHomePageScreen,
+                  onPressed: _showLoginScreen,
                   child: Text(
                     'Sign in',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary,
@@ -107,7 +107,11 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  Future<void> _registerThenShowHomePageScreen() async {
+  void _showLoginScreen() {
+    Navigator.of(context).pushNamed('/login');
+  }
+
+  Future<void> _registerThenShowLoginScreen() async {
     final url = Uri.parse(ApiUrls.registerUrl);
 
     final response = await http.post(
@@ -120,55 +124,19 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.of(context).pushNamed('/home');
+      String message = "Registered.";
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message),),
+        );
+
+      Navigator.of(context).pushNamed('/login');
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Registration Failed'),
           content: Text(response.body),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  Future<void> _loginThenShowHomePageScreen() async {
-    final url = Uri.parse(ApiUrls.loginUrl);
-
-    _emailTextController.text = 'pawelspam42@gmail.com';
-    _passwordTextController.text = 'Uniwersal11#';
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "email": _emailTextController.text,
-        "password": _passwordTextController.text,
-      }),
-    );
-
-    final responseBody = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      final String token = responseBody['accessToken'];
-
-      if (token.isNotEmpty) {
-        await storage.write(key: 'jwt', value: token);
-      }
-
-      Navigator.of(context).pushNamed('/home');
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Login Failed'),
-          content: Text(responseBody),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

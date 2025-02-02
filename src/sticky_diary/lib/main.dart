@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'screens/sign_in_screen.dart';
 import 'screens/sign_up_screen.dart';
 
 
@@ -15,6 +16,7 @@ class DiaryApp extends StatelessWidget {
           '/': (context) => const SignUpScreen(),
           '/home': (context) => const HomeScreen(),
           '/register': (context) => const SignUpScreen(),
+          '/login': (context) => const SignInScreen(),
         },
         theme: ThemeData(
           useMaterial3: true,
