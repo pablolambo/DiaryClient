@@ -16,7 +16,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   bool _obscurePassword = true;
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {

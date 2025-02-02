@@ -1,5 +1,5 @@
 class ApiUrls {
-  static const baseUrl = 'https://localhost:7144';
+  static const baseUrl = 'http://10.0.2.2:5028'; // 'https://localhost:7144';
 
   // Badges
   static const getBadgesUrl = '$baseUrl/Badge/badges';

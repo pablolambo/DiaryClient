@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
               final entry = _entries[index];
               bool isFavourite = entry['isFavourite'] ?? false;
               List<String> tags = List<String>.from(
-                (entry['entryTags'] as List).map<String>((tag) => (tag as Map<String, dynamic>)['name'] ?? '')
+                (entry['entryTags'] as List?)?.map<String>((tag) => (tag as Map<String, dynamic>)['name'] ?? '') ?? []
               );
               return Card(
                 margin: const EdgeInsets.all(8),
@@ -69,8 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        entry['content'].length > 100
-                            ? '${entry['content'].substring(0, 100)}...'
+                        entry['content'].length > 150
+                            ? '${entry['content'].substring(0, 150)}...'
                             : entry['content'],
                         style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
                       ),
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  trailing: IconButton(
+                  leading: IconButton(
                     icon: Icon(
                       isFavourite ? Icons.star : Icons.star_border,
                       color: isFavourite ? theme.colorScheme.primary : Colors.grey,
@@ -100,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {
                         entry['isFavourite'] = !isFavourite;
                       });
+                      _setFavouriteStatus(entry['id'], !isFavourite);
                     },
                   ),
                 ),
@@ -138,7 +139,40 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-   Future<void> _fetchEntries() async {
+  Future<void> _setFavouriteStatus(String entryId, bool isFavourite) async {
+    final url = Uri.parse(ApiUrls.setEntryAsFavouriteByIdUrl(entryId));
+    var token = await _storage.read(key: 'bearer');
+    
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You are not logged in')),
+      );
+      return;
+    }
+
+    final response = await http.patch(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'isFavourite': isFavourite,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(isFavourite ? 'Marked as Favourite' : 'Unmarked as Favourite')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update favourite status')),
+      );
+    }
+  }
+
+  Future<void> _fetchEntries() async {
     final now = DateTime.now();
     final oneYearAgo = now.subtract(const Duration(days: 365));
 
