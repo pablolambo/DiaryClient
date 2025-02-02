@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  leading: IconButton(
+                  trailing: IconButton(
                     icon: Icon(
                       isFavourite ? Icons.star : Icons.star_border,
                       color: isFavourite ? theme.colorScheme.primary : Colors.grey,
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    final response = await http.patch(
+    final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -173,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchEntries() async {
+    var platform = ApiUrls.getCurrentPlatform();
     final now = DateTime.now();
     final oneYearAgo = now.subtract(const Duration(days: 365));
 
