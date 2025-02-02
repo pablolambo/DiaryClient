@@ -16,7 +16,7 @@ class _SignInFormState extends State<SignInForm> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   bool _obscurePassword = true;
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class _SignInFormState extends State<SignInForm> {
       final String token = responseBody['accessToken'];
 
       if (token.isNotEmpty) {
-        await storage.write(key: 'jwt', value: token);
+        await storage.write(key: 'bearer', value: token);
       }
 
       Navigator.of(context).pushNamed('/home');
