@@ -1,8 +1,8 @@
 import 'dart:io';
 
 class ApiUrls {
-  static var baseLocalhostAndroidUrl = 'http://10.0.2.2:5028'; // baseUrl
-  static var baseUrl = 'https://localhost:7144'; // baseLocalhostAndroidUrl
+  static var baseUrl = 'http://10.0.2.2:5028'; // baseUrl
+  static var baseLocalhostAndroidUrl = 'https://localhost:7144'; // baseLocalhostAndroidUrl
 
   // Badges
   static var getBadgesUrl = '$baseUrl/Badge/badges';

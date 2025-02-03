@@ -101,42 +101,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   trailing: Wrap(
                     alignment: WrapAlignment.start,
-                    children: [ Column(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            isFavourite ? Icons.star : Icons.star_border,
-                            color: isFavourite ? theme.colorScheme.primary : Colors.grey,
+                    children: [ IconButton(
+                      icon: Icon(
+                        isFavourite ? Icons.star : Icons.star_border,
+                        color: isFavourite ? theme.colorScheme.primary : Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          entry['isFavourite'] = !isFavourite;
+                        });
+                        _setFavouriteStatus(entry['id'], !isFavourite);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _confirmDelete(entry['id']),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () async {
+                        bool? updated = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditEntryForm(
+                              entryId: entry['id'],
+                              initialTitle: entry['title'],
+                              initialContent: entry['content'],
+                              initialTags: tags,
+                            ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              entry['isFavourite'] = !isFavourite;
-                            });
-                            _setFavouriteStatus(entry['id'], !isFavourite);
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _confirmDelete(entry['id']),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () {
-                            // Navigate to the EditEntryForm with the entry details
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditEntryForm(
-                                  entryId: entry['id'],
-                                  initialTitle: entry['title'],
-                                  initialContent: entry['content'],
-                                  initialTags: tags,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                        );
+                        if (updated == true) {
+                          _fetchEntries();
+                        }
+                      },
                     ),
                     ],
                   ),
@@ -301,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       setState(() {
-        _entries.removeWhere((entry) => entry['id'] == entryId);
+        _fetchEntries();
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Entry deleted successfully')),

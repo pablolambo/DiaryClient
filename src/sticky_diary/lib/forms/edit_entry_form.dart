@@ -72,11 +72,10 @@ class _EditEntryFormState extends State<EditEntryForm> {
       );
 
       // todo:
-      // 1. fix update edit entry
-      // 2. get badges after entry creation
-      
+      // 1. get badges after entry creation
+  
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Entry updated successfully')),
         );
