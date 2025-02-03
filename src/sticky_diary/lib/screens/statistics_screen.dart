@@ -218,11 +218,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         elevation: 5,
                         child: ListTile(
                           leading: const Icon(Icons.palette, color: Colors.purple),
-                          title: const Text('Active Theme'),
+                          title: const Text('Active theme'),
                           subtitle: Text(_activeTheme ?? 'Default'),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
                       _buildThemeList(context),
                     ],
                   ),
@@ -244,8 +244,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             elevation: 5,
             child: ListTile(
               leading: const Icon(Icons.palette, color: Colors.purple),
-              title: Text('${theme['primaryColor']} & ${theme['secondaryColor']}'),
-              subtitle: Text(theme['isBought'] ? 'Bought' : 'Not Bought'),
+              title: Text(
+                theme['primaryColor'] == 'Default' 
+                  ? 'Default' 
+                  : '${theme['primaryColor']} & ${theme['secondaryColor']}',
+              ),
+              subtitle: Text(theme['primaryColor'] == 'Default' 
+                ? ''
+                : theme['isBought'] ? 'Bought' : 'Not Bought'),
               trailing: theme['isSelected']
                   ? const Icon(Icons.check, color: Colors.white)
                   : ElevatedButton(
