@@ -5,7 +5,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../apiUrls.dart';
 
 class AddEntryForm extends StatefulWidget {
-  const AddEntryForm({super.key});
+  final VoidCallback onFormClosed;
+
+  const AddEntryForm({super.key, required this.onFormClosed});
+
 
   @override
   State<AddEntryForm> createState() => _AddEntryFormState();
@@ -53,6 +56,15 @@ class _AddEntryFormState extends State<AddEntryForm> {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        final responseData = jsonDecode(response.body);
+
+        List<dynamic> badges = responseData['badgesAwarded'] ?? [];
+
+        if (badges.isNotEmpty) {
+          _showBadgeAwardedDialog(badges);
+        }
+
+        widget.onFormClosed();
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Entry created successfully')),
@@ -67,6 +79,36 @@ class _AddEntryFormState extends State<AddEntryForm> {
         _isSubmitting = false;
       });
     }
+  }
+
+  void _showBadgeAwardedDialog(List<dynamic> badges) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('🎉 Badge earned!'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: badges.map((badge) {
+              return ListTile(
+                leading: const Icon(Icons.star, color: Colors.amber, size: 40),
+                title: Text(
+                  badge['name'] ?? 'Unnamed badge',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text('Earned for ${badge['value']} entries!'),
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Awesome!'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
