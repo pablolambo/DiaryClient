@@ -85,63 +85,59 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                      Wrap(
-                      spacing: 1,
-                      runSpacing: 1, 
+                      spacing: 2.5,
+                      runSpacing: 5, 
                       children: [
-                        ...tags.take(3).map((tag) => Padding(
+                        ...tags.map((tag) => Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: Chip(
                             label: Text(tag.length > 20 ? '${tag.substring(0, 20)}...' : tag),
                             backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
                           ),
                         )),
-                        if (tags.length > 3)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Chip(
-                              label: Text('...'),
-                              backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
-                            ),
-                          ),
                       ],
                     ),
                     ],
                   ),
                   trailing: Wrap(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          isFavourite ? Icons.star : Icons.star_border,
-                          color: isFavourite ? theme.colorScheme.primary : Colors.grey,
+                    alignment: WrapAlignment.start,
+                    children: [ Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            isFavourite ? Icons.star : Icons.star_border,
+                            color: isFavourite ? theme.colorScheme.primary : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              entry['isFavourite'] = !isFavourite;
+                            });
+                            _setFavouriteStatus(entry['id'], !isFavourite);
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            entry['isFavourite'] = !isFavourite;
-                          });
-                          _setFavouriteStatus(entry['id'], !isFavourite);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _confirmDelete(entry['id']),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          // Navigate to the EditEntryForm with the entry details
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditEntryForm(
-                                entryId: entry['id'],
-                                initialTitle: entry['title'],
-                                initialContent: entry['content'],
-                                initialTags: tags,
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _confirmDelete(entry['id']),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            // Navigate to the EditEntryForm with the entry details
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditEntryForm(
+                                  entryId: entry['id'],
+                                  initialTitle: entry['title'],
+                                  initialContent: entry['content'],
+                                  initialTags: tags,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     ],
                   ),
                 ),
