@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../forms/add_entry_form.dart';
+import '../forms/edit_entry_form.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -123,6 +124,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _confirmDelete(entry['id']),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          // Navigate to the EditEntryForm with the entry details
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditEntryForm(
+                                entryId: entry['id'],
+                                initialTitle: entry['title'],
+                                initialContent: entry['content'],
+                                initialTags: tags,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
