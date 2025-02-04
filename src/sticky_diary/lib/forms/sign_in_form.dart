@@ -94,8 +94,8 @@ class _SignInFormState extends State<SignInForm> {
   Future<void> _loginThenShowHomePageScreen() async {
     final url = Uri.parse(ApiUrls.loginUrl);
 
-    _emailTextController.text = 'pawelspam42@gmail.com';
-    _passwordTextController.text = 'Uniwersal11#';
+    //_emailTextController.text = 'pawelspam42@gmail.com';
+    //_passwordTextController.text = 'Uniwersal11#';
 
     final response = await http.post(
       url,

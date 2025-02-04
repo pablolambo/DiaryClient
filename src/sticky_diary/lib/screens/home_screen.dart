@@ -1,4 +1,4 @@
-import 'package:Diary/screens/rewards_screen.dart';
+import 'package:Diary/screens/badges_screen.dart';
 import 'package:flutter/material.dart';
 import '../forms/add_entry_form.dart';
 import 'entries_screen.dart';
@@ -14,12 +14,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
-    const RewardsScreen(),
+    const BadgesScreen(),
     const EntriesScreen(),
     const StatisticsScreen(),
   ];
-
-  final List<String> titles = ['Rewards', 'Entries', 'Statistics'];
+  final List<String> titles = ['Badges', 'Entries', 'Statistics'];
 
 
   @override

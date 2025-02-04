@@ -162,6 +162,7 @@ class EntriesScreenState extends State<EntriesScreen> {
     if (response.statusCode == 200) {
       setState(() {
         _entries = jsonDecode(response.body);
+        _entries.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
         _isLoading = false;
       });
     } else {

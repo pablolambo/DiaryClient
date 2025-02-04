@@ -51,8 +51,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         );
 
         if (selectedTheme != null) {
-          _activeTheme =
-              "${selectedTheme['primaryColor']} & ${selectedTheme['secondaryColor']}";
+          _activeTheme =  selectedTheme['primaryColor'] == "Default"
+            ? "Default"
+            : "${selectedTheme['primaryColor']}${selectedTheme['secondaryColor'] != null 
+              ? ' & ${selectedTheme['secondaryColor']}' 
+              : ''}";
           _selectedThemeId = selectedTheme['id'];
         }
       });

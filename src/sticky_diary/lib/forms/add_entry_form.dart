@@ -60,12 +60,11 @@ class _AddEntryFormState extends State<AddEntryForm> {
 
         List<dynamic> badges = responseData['badgesAwarded'] ?? [];
 
+        widget.onFormClosed();
+        Navigator.pop(context);
         if (badges.isNotEmpty) {
           _showBadgeAwardedDialog(badges);
         }
-
-        widget.onFormClosed();
-        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Entry created successfully')),
         );
