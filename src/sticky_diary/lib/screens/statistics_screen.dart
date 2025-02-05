@@ -80,7 +80,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       fetchThemes();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to buy theme')),
+        const SnackBar(content: Text('No enough points to buy this theme')),
       );
     }
   }
@@ -101,6 +101,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     if (response.statusCode == 200) {
       fetchThemes();
+      fetchStatistics();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to set theme')),
@@ -129,7 +130,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     if (response.statusCode == 200) {
       setState(() {
-        _statistics = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+
+        _statistics = {
+          "totalEntries": data["totalEntries"] ?? 0,
+          "firstEntryDate": data["firstEntryDate"] ?? "",
+          "lastEntryDate": data["lastEntryDate"] ?? "",
+          "longestStreakDay": data["longestStreakDay"] ?? 0,
+          "averageEntriesPerWeek": data["averageEntriesPerWeek"] ?? 0.0,
+          "favoriteEntries": data["favoriteEntries"] ?? 0,
+          "points": data["points"] ?? 0,
+        };
+
         _isLoading = false;
       });
     } else {
@@ -282,6 +294,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   String _formatDate(String dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return "No data";
+    }
     DateTime date = DateTime.parse(dateString);
     return DateFormat('yyyy-MM-dd').format(date);
   }

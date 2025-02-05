@@ -67,9 +67,10 @@ class _BadgesScreenState extends State<BadgesScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Every badge you earn grants you 500 points. Use your points to unlock new themes and personalize your diary experience!',
+                    'Every badge you earn grants you 500 points. Use your points to unlock new themes and personalize your diary experience!!\nEach entry you add grants you +25 points.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
+
                   const SizedBox(height: 16),
                   
                   Expanded(

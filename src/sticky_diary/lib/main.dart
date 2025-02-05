@@ -2,7 +2,6 @@ import 'package:Diary/firebase_options.dart';
 import 'package:Diary/navigator_observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'models/push_notification.dart';
 import 'screens/entries_screen.dart';
@@ -11,8 +10,10 @@ import 'screens/sign_in_screen.dart';
 import 'screens/sign_up_screen.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final _messageStreamController = BehaviorSubject<RemoteMessage>();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -32,44 +33,54 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   logger.d("Handling a background message: ${message.messageId}, $message");
 }
 
-Future<void> main() async {
+  Future<void> _setupLocalNotifications() async {
+    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
+    const InitializationSettings settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    await flutterLocalNotificationsPlugin.initialize(settings);
+  }
+
+
+Future<void> main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
   final logger = Logger();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true,
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    sound: true,
+  );
 
-  final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-  if (apnsToken != null) {
-    // APNS token is available, make FCM plugin API requests...
+  await _setupLocalNotifications();
+
+  runApp(DiaryApp());
+}
+
+
+class DiaryApp extends StatefulWidget {
+  DiaryApp({super.key});
+
+  @override
+  State<DiaryApp> createState() => _DiaryAppState();
+}
+
+class _DiaryAppState extends State<DiaryApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        _showLocalNotification(message);
+      }
+    });
   }
-
-  final fcmToken = await FirebaseMessaging.instance.getToken(); 
-
-  // https://cdn-icons-png.freepik.com/256/9812/9812548.png
-  streamForegroundMessageHandlerController(logger);
-
-  runApp(const DiaryApp());
-}
-
-void streamForegroundMessageHandlerController(Logger logger) {
-  
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    if (kDebugMode) {
-      logger.d('Handling a foreground message: ${message.messageId}');
-      logger.d('Message data: ${message.data}');
-      logger.d('Message notification: ${message.notification?.title}');
-      logger.d('Message notification: ${message.notification?.body}');
-    }
-    
-    _messageStreamController.sink.add(message);
-  });
-}
-
-class DiaryApp extends StatelessWidget {
-  const DiaryApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +92,7 @@ class DiaryApp extends StatelessWidget {
           })
         ],
         routes: {
-          '/': (context) => const SignUpScreen(),//SignUpScreen(),
+          '/': (context) => const SignUpScreen(),
           '/home': (context) => const HomeScreen(),
           '/register': (context) => const SignUpScreen(),
           '/login': (context) => const SignInScreen(),
@@ -127,56 +138,22 @@ class DiaryApp extends StatelessWidget {
       entriesScreenState?.fetchEntries();
     }
   }
+
+  Future<void> _showLocalNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'high_importance_channel', 'High Importance Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+
+    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+    
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification!.title,
+      message.notification!.body,
+      platformDetails,
+    );
+  }
 }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   String _lastMessage = "";
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _messageStreamController.listen((message) {
-//       setState(() {
-//         if (message.notification != null) {
-//           _lastMessage = 'Received a notification message:'
-//               '\nTitle=${message.notification?.title},'
-//               '\nBody=${message.notification?.body},'
-//               '\nData=${message.data}';
-//         } else {
-//           _lastMessage = 'Received a data message: ${message.data}';
-//         }
-//       });
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Sticky diary'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             Text(
-//               'Last message from Firebase Messaging:',
-//               style: Theme.of(context).textTheme.titleLarge,
-//             ),
-//             Text(
-//               _lastMessage,
-//               style: Theme.of(context).textTheme.bodyLarge,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({Key? key}) : super(key: key);
-
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }

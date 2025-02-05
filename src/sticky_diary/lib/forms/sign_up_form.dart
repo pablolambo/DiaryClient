@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -90,13 +89,13 @@ class _SignUpFormState extends State<SignUpForm> {
                     backgroundColor: WidgetStateProperty.resolveWith((states) {
                       return states.contains(WidgetState.disabled)
                           ? null
-                          : Theme.of(context).colorScheme.primary;
+                          : Theme.of(context).colorScheme.onSecondary;
                     }),
                   ),
                   onPressed: _showLoginScreen,
                   child: Text(
                     'Sign in',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onPrimary,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                 ),
