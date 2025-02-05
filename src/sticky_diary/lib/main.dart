@@ -29,7 +29,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     );
   }
 
-  logger.d("Handling a background message: ${message.messageId}, ${message}");
+  logger.d("Handling a background message: ${message.messageId}, $message");
 }
 
 Future<void> main() async {

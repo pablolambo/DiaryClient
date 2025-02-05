@@ -147,7 +147,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _statistics == null

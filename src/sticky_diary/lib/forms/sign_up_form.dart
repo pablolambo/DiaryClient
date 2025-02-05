@@ -136,7 +136,7 @@ class _SignUpFormState extends State<SignUpForm> {
         // 1. "cuosDJCOQz6R1He9teB60y:APA91bEI0E-MWmSy-3NyaA-5ULi03VOprzFGki04Mr0utwCycTr7l2vN7x5DM-dgy-ELmku-Pq7I1wvA1ZUOUZTQmi2MymHWooLTAPUV3jSAABN-Y-p4VrQ"
         // 2. "cuosDJCOQz6R1He9teB60y:APA91bEI0E-MWmSy-3NyaA-5ULi03VOprzFGki04Mr0utwCycTr7l2vN7x5DM-dgy-ELmku-Pq7I1wvA1ZUOUZTQmi2MymHWooLTAPUV3jSAABN-Y-p4VrQ"
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: const Text('Registered'),),
+          const SnackBar(content: Text('Registered'),),
         );
 
       Navigator.of(context).pushNamed('/login');
