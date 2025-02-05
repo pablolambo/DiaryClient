@@ -5,7 +5,9 @@ import 'entries_screen.dart';
 import 'statistics_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(ThemeData) updateTheme;
+
+  const HomeScreen({ super.key, required this.updateTheme });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -13,17 +15,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<Widget> _screens = [
-    const BadgesScreen(),
-    const EntriesScreen(),
-    const StatisticsScreen(),
-  ];
+  late final List<Widget> _screens;
   final List<String> titles = ['Badges', 'Entries', 'Statistics'];
 
 
   @override
   void initState() {
     super.initState();
+
+    _screens = [
+      const BadgesScreen(),
+      const EntriesScreen(),
+      StatisticsScreen(updateTheme: widget.updateTheme),
+    ];
   }
 
   void _onItemTapped(int index) {

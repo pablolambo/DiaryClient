@@ -6,7 +6,9 @@ import '../apiUrls.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StatisticsScreen extends StatefulWidget {
-  const StatisticsScreen({super.key});
+  final Function(ThemeData) updateTheme;
+
+  const StatisticsScreen({ super.key, required this.updateTheme });
 
   @override
   _StatisticsScreenState createState() => _StatisticsScreenState();
@@ -85,7 +87,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
   }
 
-  Future<void> setThemeById(String themeId) async {
+  Future<void> setThemeById(String themeId, BuildContext context) async {
     final url = Uri.parse(ApiUrls.setThemeByIdUrl(themeId));
     var token = await _storage.read(key: 'bearer');
 
@@ -102,6 +104,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     if (response.statusCode == 200) {
       fetchThemes();
       fetchStatistics();
+
+      dynamic theme = jsonDecode(response.body);
+
+      _updateTheme(context, theme, widget.updateTheme);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to set theme')),
@@ -152,6 +158,69 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         const SnackBar(content: Text('Failed to load statistics')),
       );
     }
+  }
+
+  void _updateTheme(BuildContext context, dynamic themeData, Function(ThemeData) updateTheme) {
+    final brightness = themeData['secondaryColor'].toString().toLowerCase().contains('light') 
+        ? Brightness.light
+        : Brightness.dark;
+
+    final primaryColor = themeData['primaryColor'];
+    Color seedColor = Colors.purple;
+
+    if (primaryColor == 'Default') {
+      seedColor = Colors.purple;
+    }
+
+    if (primaryColor == 'Red') {
+      seedColor = Colors.red;
+    }
+
+    if (primaryColor == 'Green') {
+      seedColor = Colors.green;
+    }
+
+    if (primaryColor == 'Blue') {
+      seedColor = Colors.blue;
+    }
+
+
+    final newTheme = ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: brightness,
+      ),
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          fontSize: 72,
+          fontWeight: FontWeight.bold,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 30,
+          fontStyle: FontStyle.italic,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+        ),
+        displaySmall: TextStyle(
+          fontSize: 12,
+        ),
+      ),
+    );
+
+    updateTheme(newTheme);
+
+    (context as Element).markNeedsBuild();
   }
 
   @override
@@ -232,7 +301,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         color: theme.colorScheme.surface,
                         elevation: 5,
                         child: ListTile(
-                          leading: const Icon(Icons.palette, color: Colors.purple),
+                          leading: Icon(Icons.palette, color: Theme.of(context).colorScheme.primary),
                           title: const Text('Active theme'),
                           subtitle: Text(_activeTheme ?? 'Default'),
                         ),
@@ -258,7 +327,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             color: theme['isSelected'] ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSecondary,
             elevation: 5,
             child: ListTile(
-              leading: const Icon(Icons.palette, color: Colors.purple),
+              leading: Icon(Icons.palette, color: Theme.of(context).colorScheme.primary),
               title: Text(
                 theme['primaryColor'] == 'Default' 
                   ? 'Default' 
@@ -271,7 +340,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ? const Icon(Icons.check, color: Colors.white)
                   : ElevatedButton(
                       onPressed: theme['isBought']
-                          ? () => setThemeById(theme['id'])
+                          ? () => setThemeById(theme['id'], context)
                           : () => buyTheme(theme['id']),
                       child: theme['isBought']
                           ? const Text('Select')
@@ -287,7 +356,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildStatisticTile(
     String title, String value, IconData icon, ThemeData theme) {
     return ListTile(
-      leading: Icon(icon, color: theme.colorScheme.primary),
+      leading: Icon(icon, color: theme.colorScheme.onSecondary),
       title: Text(title, style: theme.textTheme.bodyLarge),
       trailing: Text(value, style: theme.textTheme.bodyMedium),
     );

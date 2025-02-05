@@ -62,7 +62,6 @@ Future<void> main(context) async {
   runApp(DiaryApp());
 }
 
-
 class DiaryApp extends StatefulWidget {
   DiaryApp({super.key});
 
@@ -71,6 +70,39 @@ class DiaryApp extends StatefulWidget {
 }
 
 class _DiaryAppState extends State<DiaryApp> {
+  ThemeData _themeData = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.purple,
+      brightness: Brightness.dark,
+    ),
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(
+        fontSize: 72,
+        fontWeight: FontWeight.bold,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 30,
+        fontStyle: FontStyle.italic,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+      ),
+      displaySmall: TextStyle(
+        fontSize: 12,
+      ),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -93,43 +125,19 @@ class _DiaryAppState extends State<DiaryApp> {
         ],
         routes: {
           '/': (context) => const SignUpScreen(),
-          '/home': (context) => const HomeScreen(),
+          '/home': (context) => HomeScreen(updateTheme: updateTheme),
           '/register': (context) => const SignUpScreen(),
           '/login': (context) => const SignInScreen(),
         },
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.purple,
-            brightness: Brightness.dark,  
-          ),
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              fontSize: 72,
-              fontWeight: FontWeight.bold,
-            ),
-            titleLarge: TextStyle(
-              fontSize: 30,
-              fontStyle: FontStyle.italic,
-            ),
-            bodyLarge: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            bodyMedium: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            bodySmall: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-            ),
-            displaySmall: TextStyle(
-              fontSize: 12,
-            ), 
-          ),
-        ),
+        theme: _themeData,
     );
+  }
+
+  
+  void updateTheme(ThemeData newTheme) {
+    setState(() {
+      _themeData = newTheme;
+    });
   }
 
   void _onAddEntryFormPop(BuildContext context) {
