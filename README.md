@@ -1,3 +1,3 @@
 # sticky diary
 
-Personal diary with user stickiness. Engineering work.
+Personal diary with user stickiness.
