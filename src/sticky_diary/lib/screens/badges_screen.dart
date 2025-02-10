@@ -44,7 +44,7 @@ class _BadgesScreenState extends State<BadgesScreen> {
       setState(() {
         _allBadges = allBadges;
         _unlockedBadgeIds = {
-          for (var badge in userData['unlockedBadges']) badge['id']
+          for (var badge in userData['earnedBadges']) badge['name']
         };
         _isLoading = false;
       });
@@ -78,7 +78,7 @@ class _BadgesScreenState extends State<BadgesScreen> {
                       itemCount: _allBadges.length,
                       itemBuilder: (context, index) {
                         final badge = _allBadges[index];
-                        final isUnlocked = _unlockedBadgeIds.contains(badge['id']);
+                        final isUnlocked = _unlockedBadgeIds.contains(badge['name']);
                         return Card(
                           color: isUnlocked ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSecondary,
                           child: ListTile(
