@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../apiUrls.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -108,14 +108,23 @@ class _SignInFormState extends State<SignInForm> {
 
     final responseBody = jsonDecode(response.body);
 
+    bool inactive = await hasBeenInactiveFor7Days();
+
     if (response.statusCode == 200) {
       final String token = responseBody['accessToken'];
 
       if (token.isNotEmpty) {
         await storage.write(key: 'bearer', value: token);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('last_login', DateTime.now().millisecondsSinceEpoch);
       }
 
       Navigator.of(context).pushNamed('/home');
+
+      if (inactive) {
+        _showInactiveRewardDialog();
+      }
     } else {
       showDialog(
         context: context,
@@ -131,5 +140,65 @@ class _SignInFormState extends State<SignInForm> {
         ),
       );
     }
+  }
+
+  Future<bool> hasBeenInactiveFor7Days() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final lastLogin = prefs.getInt('last_login') ?? 0;
+
+    // if (lastLogin == 0) {
+    //   return true;
+    // }
+
+    // final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
+    // final difference = DateTime.now().difference(lastLoginDate).inDays;
+
+    // return difference >= 7;
+
+    final prefs = await SharedPreferences.getInstance();
+    final lastLogin = prefs.getInt('last_login') ?? 0;
+
+    if (lastLogin == 0) {
+      return true;
+    }
+
+    final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
+    final difference = DateTime.now().difference(lastLoginDate).inSeconds;
+
+    return difference >= 15;
+  }
+
+  void _showInactiveRewardDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('👏 Welcome Back!'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.emoji_events, color: Colors.green, size: 50),
+              SizedBox(height: 10),
+              Text(
+                'You haven’t logged in for 7 days, but you’re back! 🎉',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'As a reward for staying on track, you earned 50 points! 🏆',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Awesome!'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -13,9 +13,6 @@ class EntriesScreen extends StatefulWidget {
   @override
   State<EntriesScreen> createState() => EntriesScreenState();
 
-  // @override
-  // EntriesScreenState createState() => EntriesScreenState();
-
 }
 
 class EntriesScreenState extends State<EntriesScreen> {

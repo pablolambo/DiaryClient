@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.20.2
   logger: ^2.5.0
   rxdart: ^0.28.0
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:

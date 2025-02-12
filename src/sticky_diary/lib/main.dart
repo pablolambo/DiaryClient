@@ -133,7 +133,6 @@ class _DiaryAppState extends State<DiaryApp> {
     );
   }
 
-  
   void updateTheme(ThemeData newTheme) {
     setState(() {
       _themeData = newTheme;
