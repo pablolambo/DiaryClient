@@ -14,41 +14,26 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final _messageStreamController = BehaviorSubject<RemoteMessage>();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final logger = Logger(); 
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  final logger = Logger();
-
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-
-  if (initialMessage != null) {
-    PushNotification notification = PushNotification(
-      title: initialMessage.notification?.title ?? 'Write your entry for today!',
-      body: initialMessage.notification?.body ?? 'keep a good habit.',
-      dataTitle: initialMessage.data['title'] ?? 'Write your entry for today!',
-      dataBody: initialMessage.data['body'] ?? 'keep a good habit.',
-    );
-  }
-
   logger.d("Handling a background message: ${message.messageId}, $message");
 }
-
-  Future<void> _setupLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
-    const InitializationSettings settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-    await flutterLocalNotificationsPlugin.initialize(settings);
-  }
-
+  
+Future<void> _setupLocalNotifications() async {
+  const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const InitializationSettings settings = InitializationSettings(android: androidSettings);
+  await flutterLocalNotificationsPlugin.initialize(settings);
+}
 
 Future<void> main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
-  final logger = Logger();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true,
+  await FirebaseMessaging.instance.requestPermission(provisional: true,
     alert: true,
     announcement: false,
     badge: true,
@@ -57,13 +42,11 @@ Future<void> main(context) async {
     sound: true,
   );
 
-  await _setupLocalNotifications();
-
   runApp(DiaryApp());
 }
 
 class DiaryApp extends StatefulWidget {
-  DiaryApp({super.key});
+  const DiaryApp({super.key});
 
   @override
   State<DiaryApp> createState() => _DiaryAppState();

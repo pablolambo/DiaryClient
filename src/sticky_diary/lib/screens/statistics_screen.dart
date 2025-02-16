@@ -184,7 +184,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       seedColor = Colors.blue;
     }
 
-
     final newTheme = ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
@@ -363,7 +362,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   String _formatDate(String dateString) {
-    if (dateString == null || dateString.isEmpty) {
+    if (dateString.isEmpty) {
       return "No data";
     }
     DateTime date = DateTime.parse(dateString);

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616607384091",
+    "project_id": "diaryfcm-329ad",
+    "storage_bucket": "diaryfcm-329ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616607384091:android:59c990932db74cff252ebe",
+        "android_client_info": {
+          "package_name": "com.example.sticky_diary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyqR6c0tJq_Kg8kx8DiBKIgR34zJVPX-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

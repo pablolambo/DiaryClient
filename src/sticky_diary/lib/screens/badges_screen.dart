@@ -67,12 +67,12 @@ class _BadgesScreenState extends State<BadgesScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Every badge you earn grants you 500 points. Use your points to unlock new themes and personalize your diary experience!!\nEach entry you add grants you +25 points.',
+                    'Every badge you earn grants you 500 points. ' 
+                    'Use your points to unlock new themes and personalize your diary experience!' 
+                    '\nEach entry you add grants you +25 points.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-
                   const SizedBox(height: 16),
-                  
                   Expanded(
                     child: ListView.builder(
                       itemCount: _allBadges.length,
@@ -80,10 +80,14 @@ class _BadgesScreenState extends State<BadgesScreen> {
                         final badge = _allBadges[index];
                         final isUnlocked = _unlockedBadgeIds.contains(badge['name']);
                         return Card(
-                          color: isUnlocked ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSecondary,
+                          color: isUnlocked ? 
+                            Theme.of(context).colorScheme.onPrimary 
+                            : Theme.of(context).colorScheme.onSecondary,
                           child: ListTile(
                             leading: Icon(Icons.star,
-                                color: isUnlocked ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.inversePrimary),
+                                color: isUnlocked 
+                                  ? Theme.of(context).colorScheme.primary 
+                                  : Theme.of(context).colorScheme.inversePrimary),
                             title: Text(badge['name']),
                             subtitle: Text(
                               badge['name'].toLowerCase().contains('streak') 

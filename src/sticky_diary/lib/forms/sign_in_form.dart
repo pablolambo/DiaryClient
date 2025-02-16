@@ -143,18 +143,6 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   Future<bool> hasBeenInactiveFor7Days() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final lastLogin = prefs.getInt('last_login') ?? 0;
-
-    // if (lastLogin == 0) {
-    //   return true;
-    // }
-
-    // final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
-    // final difference = DateTime.now().difference(lastLoginDate).inDays;
-
-    // return difference >= 7;
-
     final prefs = await SharedPreferences.getInstance();
     final lastLogin = prefs.getInt('last_login') ?? 0;
 
@@ -163,10 +151,22 @@ class _SignInFormState extends State<SignInForm> {
     }
 
     final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
-    final difference = DateTime.now().difference(lastLoginDate).inSeconds;
+    final difference = DateTime.now().difference(lastLoginDate).inDays;
 
-    return difference >= 15;
+    return difference >= 7;
   }
+
+      // final prefs = await SharedPreferences.getInstance();
+    // final lastLogin = prefs.getInt('last_login') ?? 0;
+
+    // if (lastLogin == 0) {
+    //   return true;
+    // }
+
+    // final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
+    // final difference = DateTime.now().difference(lastLoginDate).inSeconds;
+
+    // return difference >= 15;
 
   void _showInactiveRewardDialog() {
     showDialog(
@@ -174,9 +174,9 @@ class _SignInFormState extends State<SignInForm> {
       builder: (context) {
         return AlertDialog(
           title: const Text('👏 Welcome Back!'),
-          content: Column(
+          content: const Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Icon(Icons.emoji_events, color: Colors.green, size: 50),
               SizedBox(height: 10),
               Text(
