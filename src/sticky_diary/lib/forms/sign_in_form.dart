@@ -153,7 +153,7 @@ class _SignInFormState extends State<SignInForm> {
     final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
     final difference = DateTime.now().difference(lastLoginDate).inDays;
 
-    return difference >= 7;
+    return difference >= 0;
   }
 
       // final prefs = await SharedPreferences.getInstance();

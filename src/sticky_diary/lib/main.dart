@@ -3,7 +3,6 @@ import 'package:Diary/navigator_observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'models/push_notification.dart';
 import 'screens/entries_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/sign_in_screen.dart';
@@ -42,7 +41,7 @@ Future<void> main(context) async {
     sound: true,
   );
 
-  runApp(DiaryApp());
+  runApp(const DiaryApp());
 }
 
 class DiaryApp extends StatefulWidget {
