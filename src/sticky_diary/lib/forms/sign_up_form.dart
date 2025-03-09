@@ -124,16 +124,6 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     if (response.statusCode == 200) {
-        // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
-
-        // final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-        // if (apnsToken != null) {
-        //   // APNS token is available, make FCM plugin API requests...
-        // }
-
-        // final fcmToken = await FirebaseMessaging.instance.getToken(); 
-        // 1. "cuosDJCOQz6R1He9teB60y:APA91bEI0E-MWmSy-3NyaA-5ULi03VOprzFGki04Mr0utwCycTr7l2vN7x5DM-dgy-ELmku-Pq7I1wvA1ZUOUZTQmi2MymHWooLTAPUV3jSAABN-Y-p4VrQ"
-        // 2. "cuosDJCOQz6R1He9teB60y:APA91bEI0E-MWmSy-3NyaA-5ULi03VOprzFGki04Mr0utwCycTr7l2vN7x5DM-dgy-ELmku-Pq7I1wvA1ZUOUZTQmi2MymHWooLTAPUV3jSAABN-Y-p4VrQ"
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registered'),),
         );

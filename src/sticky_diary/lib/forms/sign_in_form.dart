@@ -94,9 +94,6 @@ class _SignInFormState extends State<SignInForm> {
   Future<void> _loginThenShowHomePageScreen() async {
     final url = Uri.parse(ApiUrls.loginUrl);
 
-    //_emailTextController.text = 'pawelspam42@gmail.com';
-    //_passwordTextController.text = 'Uniwersal11#';
-
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -153,20 +150,8 @@ class _SignInFormState extends State<SignInForm> {
     final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
     final difference = DateTime.now().difference(lastLoginDate).inDays;
 
-    return difference >= 0;
+    return difference >= 7;
   }
-
-      // final prefs = await SharedPreferences.getInstance();
-    // final lastLogin = prefs.getInt('last_login') ?? 0;
-
-    // if (lastLogin == 0) {
-    //   return true;
-    // }
-
-    // final lastLoginDate = DateTime.fromMillisecondsSinceEpoch(lastLogin);
-    // final difference = DateTime.now().difference(lastLoginDate).inSeconds;
-
-    // return difference >= 15;
 
   void _showInactiveRewardDialog() {
     showDialog(

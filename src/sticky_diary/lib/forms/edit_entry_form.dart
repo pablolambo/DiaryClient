@@ -70,9 +70,6 @@ class _EditEntryFormState extends State<EditEntryForm> {
           'tagNames': tags,
         }),
       );
-
-      // todo:
-      // 1. get badges after entry creation
   
       if (response.statusCode >= 200 && response.statusCode < 300) {
         Navigator.pop(context, true);
